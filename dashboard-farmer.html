@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Dashboard - Shree Anna Platform</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/auth.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header">
+            <div class="dashboard-nav">
+                <div class="dashboard-title">
+                    <i class="fas fa-seedling"></i>
+                    Farmer Dashboard
+                </div>
+                <div class="dashboard-user">
+                    <span id="farmerName"></span>
+                    <button class="btn btn-outline" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Content -->
+        <div class="dashboard-content">
+            <!-- Stats Cards -->
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <h3 id="totalCrops">0</h3>
+                    <p>Total Crops Listed</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="soldCrops">0</h3>
+                    <p>Crops Sold</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="pendingOrders">0</h3>
+                    <p>Pending Orders</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="totalRevenue">₹0</h3>
+                    <p>Total Revenue</p>
+                </div>
+            </div>
+
+            <!-- Weather & Recommendations Section -->
+            <div class="dashboard-section">
+                <h2><i class="fas fa-cloud-sun"></i> Weather & Recommendations</h2>
+                <div class="weather-widget" data-location="Bangalore">
+                    <!-- Weather data will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Price Prediction Section -->
+            <div class="dashboard-section">
+                <h2><i class="fas fa-chart-line"></i> Price Prediction</h2>
+                <div class="price-prediction">
+                    <h4><i class="fas fa-lightbulb"></i> Suggested Price for Your Crop</h4>
+                    <div class="predicted-price" id="predictedPrice">₹0</div>
+                    <div class="price-trend" id="priceTrend">Based on market trends and demand</div>
+                </div>
+            </div>
+
+            <!-- Add Crop Section -->
+            <div class="dashboard-section">
+                <h2><i class="fas fa-plus-circle"></i> Add New Crop</h2>
+                <form id="addCropForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="cropName">Crop Name</label>
+                            <input type="text" id="cropName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="cropType">Millet Type</label>
+                            <select id="cropType" required onchange="updatePricePrediction()">
+                                <option value="">Select Type</option>
+                                <option value="Finger Millet">Finger Millet (Ragi)</option>
+                                <option value="Pearl Millet">Pearl Millet (Bajra)</option>
+                                <option value="Foxtail Millet">Foxtail Millet</option>
+                                <option value="Little Millet">Little Millet</option>
+                                <option value="Kodo Millet">Kodo Millet</option>
+                                <option value="Proso Millet">Proso Millet</option>
+                                <option value="Barnyard Millet">Barnyard Millet</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="cropQuantity">Quantity</label>
+                            <input type="number" id="cropQuantity" required min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="cropUnit">Unit</label>
+                            <select id="cropUnit" required>
+                                <option value="kg">Kilograms (kg)</option>
+                                <option value="quintal">Quintal</option>
+                                <option value="ton">Ton</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="cropPrice">Price per Unit (₹)</label>
+                            <input type="number" id="cropPrice" required min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="cropLocation">Location</label>
+                            <input type="text" id="cropLocation" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="cropQuality">Quality</label>
+                            <select id="cropQuality" required onchange="updatePricePrediction()">
+                                <option value="Premium">Premium</option>
+                                <option value="Good">Good</option>
+                                <option value="Organic">Organic</option>
+                                <option value="Fair">Fair</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="cropImage">Upload Image</label>
+                            <div class="image-upload" id="cropImageUpload">
+                                <div class="upload-icon">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                </div>
+                                <p>Click or drag to upload image</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="cropDescription">Description</label>
+                        <textarea id="cropDescription" rows="3" placeholder="Describe your crop..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add Crop
+                    </button>
+                </form>
+            </div>
+
+            <!-- Analytics Section -->
+            <div class="analytics-section">
+                <div class="analytics-header">
+                    <h2><i class="fas fa-chart-bar"></i> Analytics</h2>
+                    <div class="analytics-controls">
+                        <select id="analyticsPeriod">
+                            <option value="7">Last 7 days</option>
+                            <option value="30">Last 30 days</option>
+                            <option value="90">Last 90 days</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="analytics-grid">
+                    <div class="chart-container" data-chart-type="bar" data-chart-data="sales">
+                        <canvas id="salesChart"></canvas>
+                    </div>
+                    <div class="chart-container" data-chart-type="line" data-chart-data="revenue">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- My Crops Section -->
+            <div class="dashboard-section">
+                <h2><i class="fas fa-seedling"></i> My Crops</h2>
+                <div class="section-actions">
+                    <button class="btn btn-outline" onclick="filterCrops('all')">
+                        <i class="fas fa-list"></i> All
+                    </button>
+                    <button class="btn btn-outline" onclick="filterCrops('available')">
+                        <i class="fas fa-check-circle"></i> Available
+                    </button>
+                    <button class="btn btn-outline" onclick="filterCrops('sold')">
+                        <i class="fas fa-shopping-cart"></i> Sold
+                    </button>
+                </div>
+                <div id="cropsList" class="products-grid">
+                    <!-- Crops will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Order History Section -->
+            <div class="dashboard-section">
+                <h2><i class="fas fa-history"></i> Order History</h2>
+                <div class="section-actions">
+                    <button class="btn btn-outline" onclick="filterOrders('all')">
+                        <i class="fas fa-list"></i> All Orders
+                    </button>
+                    <button class="btn btn-outline" onclick="filterOrders('pending')">
+                        <i class="fas fa-clock"></i> Pending
+                    </button>
+                    <button class="btn btn-outline" onclick="filterOrders('completed')">
+                        <i class="fas fa-check"></i> Completed
+                    </button>
+                </div>
+                <div id="orderHistory">
+                    <!-- Order history will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Profile Section -->
+            <div class="profile-section">
+                <h2><i class="fas fa-user"></i> My Profile</h2>
+                <form id="profileForm">
+                    <div class="profile-header">
+                        <div class="profile-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="profile-info">
+                            <h3 id="profileName">Farmer Name</h3>
+                            <span class="profile-role">Farmer</span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="profileEmail">Email</label>
+                            <input type="email" id="profileEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="profilePhone">Phone</label>
+                            <input type="tel" id="profilePhone">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="profileAddress">Address</label>
+                            <textarea id="profileAddress" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="profileExperience">Farming Experience (years)</label>
+                            <input type="number" id="profileExperience" min="0">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="profileSpecialization">Specialization</label>
+                        <input type="text" id="profileSpecialization" placeholder="e.g., Organic farming, Millet cultivation">
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Update Profile
+                    </button>
+                </form>
+            </div>
+
+            <!-- Chat Section -->
+            <div class="dashboard-section">
+                <h2><i class="fas fa-comments"></i> Messages</h2>
+                <div class="chat-container">
+                    <div class="chat-sidebar">
+                        <div class="chat-header">
+                            <h3>Contacts</h3>
+                        </div>
+                        <div id="chatContacts">
+                            <!-- Chat contacts will be loaded here -->
+                        </div>
+                    </div>
+                    <div class="chat-main">
+                        <div class="chat-header">
+                            <h3 id="chatWith">Select a contact</h3>
+                            <button class="btn btn-outline btn-small" onclick="refreshChat()">
+                                <i class="fas fa-sync"></i>
+                            </button>
+                        </div>
+                        <div class="chat-messages" id="chatMessages">
+                            <p class="text-center">Select a contact to start chatting</p>
+                        </div>
+                        <div class="chat-input">
+                            <input type="text" id="chatInput" placeholder="Type a message..." disabled>
+                            <button class="btn btn-primary" onclick="sendMessage()" disabled id="sendMessageBtn">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Crop Modal -->
+    <div class="modal" id="editCropModal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('editCropModal')">&times;</span>
+            <h2>Edit Crop</h2>
+            <form id="editCropForm">
+                <input type="hidden" id="editCropId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editCropName">Crop Name</label>
+                        <input type="text" id="editCropName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editCropType">Millet Type</label>
+                        <select id="editCropType" required>
+                            <option value="Finger Millet">Finger Millet (Ragi)</option>
+                            <option value="Pearl Millet">Pearl Millet (Bajra)</option>
+                            <option value="Foxtail Millet">Foxtail Millet</option>
+                            <option value="Little Millet">Little Millet</option>
+                            <option value="Kodo Millet">Kodo Millet</option>
+                            <option value="Proso Millet">Proso Millet</option>
+                            <option value="Barnyard Millet">Barnyard Millet</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editCropQuantity">Quantity</label>
+                        <input type="number" id="editCropQuantity" required min="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="editCropUnit">Unit</label>
+                        <select id="editCropUnit" required>
+                            <option value="kg">Kilograms (kg)</option>
+                            <option value="quintal">Quintal</option>
+                            <option value="ton">Ton</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editCropPrice">Price per Unit (₹)</label>
+                        <input type="number" id="editCropPrice" required min="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="editCropLocation">Location</label>
+                        <input type="text" id="editCropLocation" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editCropQuality">Quality</label>
+                        <select id="editCropQuality" required>
+                            <option value="Premium">Premium</option>
+                            <option value="Good">Good</option>
+                            <option value="Organic">Organic</option>
+                            <option value="Fair">Fair</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editCropImage">Image URL</label>
+                        <input type="url" id="editCropImage">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="editCropDescription">Description</label>
+                    <textarea id="editCropDescription" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Update Crop
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/farmer-dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transporter Dashboard - Shree Anna Platform</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/auth.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header">
+            <div class="dashboard-nav">
+                <div class="dashboard-title">
+                    <i class="fas fa-truck"></i>
+                    Transporter Dashboard
+                </div>
+                <div class="dashboard-user">
+                    <span id="transporterName"></span>
+                    <button class="btn btn-outline" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Content -->
+        <div class="dashboard-content">
+            <!-- Stats Cards -->
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <h3 id="totalDeliveries">0</h3>
+                    <p>Total Deliveries</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="pendingDeliveries">0</h3>
+                    <p>Pending Deliveries</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="completedDeliveries">0</h3>
+                    <p>Completed Deliveries</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="totalEarnings">₹0</h3>
+                    <p>Total Earnings</p>
+                </div>
+            </div>
+
+            <!-- Available Transport Requests -->
+            <div class="dashboard-section">
+                <h2><i class="fas fa-list"></i> Available Transport Requests</h2>
+                <div class="section-actions">
+                    <button class="btn btn-outline" onclick="filterRequests('all')">
+                        <i class="fas fa-list"></i> All Requests
+                    </button>
+                    <button class="btn btn-outline" onclick="filterRequests('pending')">
+                        <i class="fas fa-clock"></i> Pending
+                    </button>
+                    <button class="btn btn-outline" onclick="filterRequests('assigned')">
+                        <i class="fas fa-check"></i> Assigned
+                    </button>
+                </div>
+                <div id="transportRequestsList">
+                    <!-- Transport requests will be loaded here -->
+                </div>
+            </div>
+
+            <!-- My Deliveries -->
+            <div class="dashboard-section">
+                <h2><i class="fas fa-truck"></i> My Deliveries</h2>
+                <div class="section-actions">
+                    <button class="btn btn-outline" onclick="filterDeliveries('all')">
+                        <i class="fas fa-list"></i> All Deliveries
+                    </button>
+                    <button class="btn btn-outline" onclick="filterDeliveries('in-transit')">
+                        <i class="fas fa-truck"></i> In Transit
+                    </button>
+                    <button class="btn btn-outline" onclick="filterDeliveries('delivered')">
+                        <i class="fas fa-check-circle"></i> Delivered
+                    </button>
+                </div>
+                <div id="myDeliveriesList">
+                    <!-- My deliveries will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Delivery Status Update -->
+            <div class="dashboard-section">
+                <h2><i class="fas fa-edit"></i> Update Delivery Status</h2>
+                <form id="statusUpdateForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="deliveryId">Select Delivery</label>
+                            <select id="deliveryId" required>
+                                <option value="">Select a delivery</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="deliveryStatus">Status</label>
+                            <select id="deliveryStatus" required>
+                                <option value="">Select status</option>
+                                <option value="picked-up">Picked Up</option>
+                                <option value="in-transit">In Transit</option>
+                                <option value="delivered">Delivered</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="deliveryNotes">Notes (Optional)</label>
+                        <textarea id="deliveryNotes" rows="3" placeholder="Add delivery notes..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Update Status
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transport Request Details Modal -->
+    <div class="modal" id="requestModal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('requestModal')">&times;</span>
+            <h2>Transport Request Details</h2>
+            <div id="requestDetails"></div>
+            <div class="modal-actions">
+                <button class="btn btn-primary" onclick="transporterDashboard.acceptRequest()">
+                    <i class="fas fa-check"></i> Accept Request
+                </button>
+                <button class="btn btn-outline" onclick="closeModal('requestModal')">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/transporter-dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketplace - Shree Anna Platform</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/auth.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-seedling"></i>
+                <span>Shree Anna Platform</span>
+            </div>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="marketplace.html" class="nav-link active">Marketplace</a>
+                <a href="about.html" class="nav-link">About</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+                <div class="nav-auth" id="navAuth">
+                    <button class="btn btn-outline" onclick="showLogin()">Login</button>
+                    <button class="btn btn-primary" onclick="showRegister()">Register</button>
+                </div>
+                <div class="nav-user" id="navUser" style="display: none;">
+                    <span id="userName"></span>
+                    <button class="btn btn-outline" onclick="logout()">Logout</button>
+                </div>
+            </div>
+            <div class="nav-toggle" id="navToggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Marketplace Header -->
+    <section class="marketplace-header">
+        <div class="container">
+            <h1>🌾 Shree Anna Marketplace</h1>
+            <p>Discover premium millet products from trusted farmers and processors</p>
+        </div>
+    </section>
+
+    <!-- Search and Filter Section -->
+    <section class="filter-section">
+        <div class="container">
+            <form id="marketplaceSearchForm">
+                <div class="search-row">
+                    <div class="search-group">
+                        <input type="text" id="marketplaceSearch" placeholder="Search products and crops..." class="search-input">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label for="categoryFilter">Category</label>
+                        <select id="categoryFilter">
+                            <option value="">All Categories</option>
+                            <option value="crops">Raw Crops</option>
+                            <option value="products">Processed Products</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="milletTypeFilter">Millet Type</label>
+                        <select id="milletTypeFilter">
+                            <option value="">All Types</option>
+                            <option value="Finger Millet">Finger Millet (Ragi)</option>
+                            <option value="Pearl Millet">Pearl Millet (Bajra)</option>
+                            <option value="Foxtail Millet">Foxtail Millet</option>
+                            <option value="Little Millet">Little Millet</option>
+                            <option value="Kodo Millet">Kodo Millet</option>
+                            <option value="Proso Millet">Proso Millet</option>
+                            <option value="Barnyard Millet">Barnyard Millet</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="locationFilter">Location</label>
+                        <input type="text" id="locationFilter" placeholder="Enter location...">
+                    </div>
+                    <div class="filter-group">
+                        <label for="qualityFilter">Quality</label>
+                        <select id="qualityFilter">
+                            <option value="">All Qualities</option>
+                            <option value="Premium">Premium</option>
+                            <option value="Good">Good</option>
+                            <option value="Organic">Organic</option>
+                            <option value="Fair">Fair</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="priceMinFilter">Min Price (₹)</label>
+                        <input type="number" id="priceMinFilter" placeholder="Min price">
+                    </div>
+                    <div class="filter-group">
+                        <label for="priceMaxFilter">Max Price (₹)</label>
+                        <input type="number" id="priceMaxFilter" placeholder="Max price">
+                    </div>
+                    <div class="filter-group">
+                        <button type="button" class="btn btn-outline" onclick="clearFilters()">
+                            <i class="fas fa-times"></i> Clear
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Marketplace Content -->
+    <section class="marketplace-content">
+        <div class="container">
+            <!-- Category Tabs -->
+            <div class="category-tabs">
+                <button class="tab-btn active" onclick="showCategory('all')">
+                    <i class="fas fa-th"></i> All Items
+                </button>
+                <button class="tab-btn" onclick="showCategory('crops')">
+                    <i class="fas fa-seedling"></i> Raw Crops
+                </button>
+                <button class="tab-btn" onclick="showCategory('products')">
+                    <i class="fas fa-box"></i> Processed Products
+                </button>
+            </div>
+
+            <!-- Sort Options -->
+            <div class="sort-section">
+                <label for="sortBy">Sort by:</label>
+                <select id="sortBy" onchange="sortItems()">
+                    <option value="newest">Newest First</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                    <option value="quantity">Quantity Available</option>
+                    <option value="name">Name A-Z</option>
+                </select>
+            </div>
+
+            <!-- Items Grid -->
+            <div id="marketplaceItems" class="marketplace-grid">
+                <!-- Items will be loaded here -->
+            </div>
+
+            <!-- Load More Button -->
+            <div class="load-more-section">
+                <button class="btn btn-outline" onclick="loadMoreItems()">
+                    <i class="fas fa-plus"></i> Load More Items
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Traceability Section -->
+    <section class="traceability-section">
+        <div class="container">
+            <h2><i class="fas fa-search"></i> Traceability</h2>
+            <p>Track your millet from farm to table with our comprehensive traceability system</p>
+            <div class="traceability-flow">
+                <div class="flow-step">
+                    <i class="fas fa-seedling"></i>
+                    <h3>Farm</h3>
+                    <p>Origin tracking from certified farms</p>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">
+                    <i class="fas fa-truck"></i>
+                    <h3>Transport</h3>
+                    <p>Logistics tracking with transporters</p>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">
+                    <i class="fas fa-industry"></i>
+                    <h3>Processing</h3>
+                    <p>Value addition and processing</p>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">
+                    <i class="fas fa-store"></i>
+                    <h3>Market</h3>
+                    <p>Final delivery to consumers</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Millet Benefits Section -->
+    <section class="millet-benefits">
+        <div class="container">
+            <h2>Why Choose Millets (Shree Anna)?</h2>
+            <div class="benefits-grid">
+                <div class="benefit">
+                    <i class="fas fa-heart"></i>
+                    <h3>Nutritional Powerhouse</h3>
+                    <p>Rich in protein, fiber, and essential minerals</p>
+                </div>
+                <div class="benefit">
+                    <i class="fas fa-leaf"></i>
+                    <h3>Climate Resilient</h3>
+                    <p>Drought-resistant crops that require less water</p>
+                </div>
+                <div class="benefit">
+                    <i class="fas fa-seedling"></i>
+                    <h3>Sustainable Farming</h3>
+                    <p>Promotes soil health and biodiversity</p>
+                </div>
+                <div class="benefit">
+                    <i class="fas fa-rupee-sign"></i>
+                    <h3>Economic Benefits</h3>
+                    <p>Better prices for farmers and value-added products</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Shree Anna Platform</h3>
+                    <p>Connecting the millet value chain for sustainable agriculture and nutrition security.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="marketplace.html">Marketplace</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Shree Anna Platform. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('loginModal')">&times;</span>
+            <h2>Login to Shree Anna Platform</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">Login</button>
+            </form>
+            <p class="modal-switch">Don't have an account? <a href="#" onclick="showRegister()">Register here</a></p>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div class="modal" id="registerModal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('registerModal')">&times;</span>
+            <h2>Join Shree Anna Platform</h2>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="registerName">Full Name</label>
+                    <input type="text" id="registerName" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">Email</label>
+                    <input type="email" id="registerEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Password</label>
+                    <input type="password" id="registerPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerRole">Role</label>
+                    <select id="registerRole" required>
+                        <option value="">Select your role</option>
+                        <option value="farmer">Farmer</option>
+                        <option value="dealer">Dealer/Buyer</option>
+                        <option value="transporter">Transporter</option>
+                        <option value="service">Service Provider</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">Register</button>
+            </form>
+            <p class="modal-switch">Already have an account? <a href="#" onclick="showLogin()">Login here</a></p>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/marketplace.js"></script>
+</body>
+</html>

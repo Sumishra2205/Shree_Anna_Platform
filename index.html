@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-translate="title">Shree Anna Platform - Digital Marketplace for Millets</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/auth.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-seedling"></i>
+                <span>Shree Anna Platform</span>
+            </div>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link" data-translate="home">Home</a>
+                <a href="marketplace.html" class="nav-link" data-translate="marketplace">Marketplace</a>
+                <a href="about.html" class="nav-link" data-translate="about">About</a>
+                <a href="contact.html" class="nav-link" data-translate="contact">Contact</a>
+                <div class="nav-auth" id="navAuth">
+                    <button class="btn btn-outline" onclick="showLogin()" data-translate="login">Login</button>
+                    <button class="btn btn-primary" onclick="showRegister()" data-translate="register">Register</button>
+                </div>
+                <div class="nav-user" id="navUser" style="display: none;">
+                    <span id="userName"></span>
+                    <button class="btn btn-outline" onclick="logout()" data-translate="logout">Logout</button>
+                </div>
+            </div>
+            <div class="nav-toggle" id="navToggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1 data-translate="title">🌾 Shree Anna Platform</h1>
+            <p class="hero-subtitle" data-translate="heroSubtitle">Connecting Farmers, FPOs, and Consumers for Sustainable Millet Trading</p>
+            <div class="hero-stats">
+                <div class="stat">
+                    <h3>500+</h3>
+                    <p data-translate="activeFarmers">Active Farmers</p>
+                </div>
+                <div class="stat">
+                    <h3>1000+</h3>
+                    <p data-translate="productsListed">Products Listed</p>
+                </div>
+                <div class="stat">
+                    <h3>50+</h3>
+                    <p data-translate="fposConnected">FPOs Connected</p>
+                </div>
+            </div>
+            <div class="hero-actions">
+                <button class="btn btn-primary btn-large" onclick="showRegister()" data-translate="joinPlatform">Join Platform</button>
+                <button class="btn btn-outline btn-large" onclick="window.location.href='marketplace.html'" data-translate="browseMarketplace">Browse Marketplace</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <h2 data-translate="platformFeatures">Platform Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-users"></i>
+                    <h3 data-translate="roleBasedAccess">Role-Based Access</h3>
+                    <p data-translate="roleBasedAccessDesc">Separate dashboards for farmers, dealers, transporters, and service providers</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-search"></i>
+                    <h3 data-translate="smartSearch">Smart Search</h3>
+                    <p data-translate="smartSearchDesc">Find millet products by type, location, price, and quality</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-truck"></i>
+                    <h3 data-translate="logisticsIntegration">Logistics Integration</h3>
+                    <p data-translate="logisticsIntegrationDesc">Connect with transporters for seamless delivery</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-certificate"></i>
+                    <h3 data-translate="qualityAssurance">Quality Assurance</h3>
+                    <p data-translate="qualityAssuranceDesc">Traceability from farm to consumer with quality certifications</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Millet Benefits Section -->
+    <section class="millet-benefits">
+        <div class="container">
+            <h2 data-translate="whyChooseMillets">Why Choose Millets (Shree Anna)?</h2>
+            <div class="benefits-grid">
+                <div class="benefit">
+                    <i class="fas fa-heart"></i>
+                    <h3 data-translate="nutritionalPowerhouse">Nutritional Powerhouse</h3>
+                    <p data-translate="nutritionalPowerhouseDesc">Rich in protein, fiber, and essential minerals</p>
+                </div>
+                <div class="benefit">
+                    <i class="fas fa-leaf"></i>
+                    <h3 data-translate="climateResilient">Climate Resilient</h3>
+                    <p data-translate="climateResilientDesc">Drought-resistant crops that require less water</p>
+                </div>
+                <div class="benefit">
+                    <i class="fas fa-seedling"></i>
+                    <h3 data-translate="sustainableFarming">Sustainable Farming</h3>
+                    <p data-translate="sustainableFarmingDesc">Promotes soil health and biodiversity</p>
+                </div>
+                <div class="benefit">
+                    <i class="fas fa-rupee-sign"></i>
+                    <h3 data-translate="economicBenefits">Economic Benefits</h3>
+                    <p data-translate="economicBenefitsDesc">Better prices for farmers and value-added products</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('loginModal')">&times;</span>
+            <h2>Login to Shree Anna Platform</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">Login</button>
+            </form>
+            <p class="modal-switch">Don't have an account? <a href="#" onclick="showRegister()">Register here</a></p>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div class="modal" id="registerModal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('registerModal')">&times;</span>
+            <h2>Join Shree Anna Platform</h2>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="registerName">Full Name</label>
+                    <input type="text" id="registerName" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">Email</label>
+                    <input type="email" id="registerEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Password</label>
+                    <input type="password" id="registerPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerRole">Role</label>
+                    <select id="registerRole" required>
+                        <option value="">Select your role</option>
+                        <option value="farmer">Farmer</option>
+                        <option value="dealer">Dealer/Buyer</option>
+                        <option value="transporter">Transporter</option>
+                        <option value="service">Service Provider</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">Register</button>
+            </form>
+            <p class="modal-switch">Already have an account? <a href="#" onclick="showLogin()">Login here</a></p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Shree Anna Platform</h3>
+                    <p>Connecting the millet value chain for sustainable agriculture and nutrition security.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="marketplace.html">Marketplace</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Shree Anna Platform. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/translations.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Provider Dashboard - Shree Anna Platform</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/auth.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header">
+            <div class="dashboard-nav">
+                <div class="dashboard-title">
+                    <i class="fas fa-industry"></i>
+                    Service Provider Dashboard
+                </div>
+                <div class="dashboard-user">
+                    <span id="serviceName"></span>
+                    <button class="btn btn-outline" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Content -->
+        <div class="dashboard-content">
+            <!-- Stats Cards -->
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <h3 id="totalProducts">0</h3>
+                    <p>Total Products</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="soldProducts">0</h3>
+                    <p>Products Sold</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="pendingOrders">0</h3>
+                    <p>Pending Orders</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="totalRevenue">₹0</h3>
+                    <p>Total Revenue</p>
+                </div>
+            </div>
+
+            <!-- Add Product Section -->
+            <div class="dashboard-section">
+                <h2><i class="fas fa-plus-circle"></i> Add New Product</h2>
+                <form id="addProductForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="productName">Product Name</label>
+                            <input type="text" id="productName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="productType">Product Type</label>
+                            <select id="productType" required>
+                                <option value="">Select Type</option>
+                                <option value="Processed">Processed Food</option>
+                                <option value="Value Added">Value Added Product</option>
+                                <option value="Bakery">Bakery Item</option>
+                                <option value="Beverage">Beverage</option>
+                                <option value="Snack">Snack</option>
+                                <option value="Flour">Flour</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="productPrice">Price (₹)</label>
+                            <input type="number" id="productPrice" required min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="productUnit">Unit</label>
+                            <select id="productUnit" required>
+                                <option value="kg">Kilograms (kg)</option>
+                                <option value="pack">Pack</option>
+                                <option value="piece">Piece</option>
+                                <option value="liter">Liter</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="productCertification">Certification</label>
+                            <select id="productCertification" required>
+                                <option value="">Select Certification</option>
+                                <option value="FSSAI Approved">FSSAI Approved</option>
+                                <option value="Organic Certified">Organic Certified</option>
+                                <option value="ISO Certified">ISO Certified</option>
+                                <option value="HACCP Certified">HACCP Certified</option>
+                                <option value="None">None</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="productImage">Image URL</label>
+                            <input type="url" id="productImage" placeholder="https://example.com/image.jpg">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="productDescription">Description</label>
+                        <textarea id="productDescription" rows="3" placeholder="Describe your product..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add Product
+                    </button>
+                </form>
+            </div>
+
+            <!-- My Products Section -->
+            <div class="dashboard-section">
+                <h2><i class="fas fa-box"></i> My Products</h2>
+                <div class="section-actions">
+                    <button class="btn btn-outline" onclick="filterProducts('all')">
+                        <i class="fas fa-list"></i> All Products
+                    </button>
+                    <button class="btn btn-outline" onclick="filterProducts('available')">
+                        <i class="fas fa-check-circle"></i> Available
+                    </button>
+                    <button class="btn btn-outline" onclick="filterProducts('sold')">
+                        <i class="fas fa-shopping-cart"></i> Sold
+                    </button>
+                </div>
+                <div id="productsList" class="products-grid">
+                    <!-- Products will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Raw Material Sourcing -->
+            <div class="dashboard-section">
+                <h2><i class="fas fa-seedling"></i> Raw Material Sourcing</h2>
+                <div class="section-actions">
+                    <button class="btn btn-primary" onclick="showRawMaterialModal()">
+                        <i class="fas fa-plus"></i> Source Raw Materials
+                    </button>
+                </div>
+                <div id="rawMaterialsList">
+                    <!-- Raw material requests will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Partner with Farmers -->
+            <div class="dashboard-section">
+                <h2><i class="fas fa-handshake"></i> Partner with Farmers</h2>
+                <div class="section-actions">
+                    <button class="btn btn-primary" onclick="showPartnershipModal()">
+                        <i class="fas fa-plus"></i> Create Partnership Request
+                    </button>
+                </div>
+                <div id="partnershipsList">
+                    <!-- Partnerships will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Product Modal -->
+    <div class="modal" id="editProductModal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('editProductModal')">&times;</span>
+            <h2>Edit Product</h2>
+            <form id="editProductForm">
+                <input type="hidden" id="editProductId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editProductName">Product Name</label>
+                        <input type="text" id="editProductName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editProductType">Product Type</label>
+                        <select id="editProductType" required>
+                            <option value="Processed">Processed Food</option>
+                            <option value="Value Added">Value Added Product</option>
+                            <option value="Bakery">Bakery Item</option>
+                            <option value="Beverage">Beverage</option>
+                            <option value="Snack">Snack</option>
+                            <option value="Flour">Flour</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editProductPrice">Price (₹)</label>
+                        <input type="number" id="editProductPrice" required min="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="editProductUnit">Unit</label>
+                        <select id="editProductUnit" required>
+                            <option value="kg">Kilograms (kg)</option>
+                            <option value="pack">Pack</option>
+                            <option value="piece">Piece</option>
+                            <option value="liter">Liter</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editProductCertification">Certification</label>
+                        <select id="editProductCertification" required>
+                            <option value="FSSAI Approved">FSSAI Approved</option>
+                            <option value="Organic Certified">Organic Certified</option>
+                            <option value="ISO Certified">ISO Certified</option>
+                            <option value="HACCP Certified">HACCP Certified</option>
+                            <option value="None">None</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editProductImage">Image URL</label>
+                        <input type="url" id="editProductImage">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="editProductDescription">Description</label>
+                    <textarea id="editProductDescription" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Update Product
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Raw Material Modal -->
+    <div class="modal" id="rawMaterialModal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('rawMaterialModal')">&times;</span>
+            <h2>Source Raw Materials</h2>
+            <form id="rawMaterialForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="rawMaterialType">Millet Type</label>
+                        <select id="rawMaterialType" required>
+                            <option value="">Select Type</option>
+                            <option value="Finger Millet">Finger Millet (Ragi)</option>
+                            <option value="Pearl Millet">Pearl Millet (Bajra)</option>
+                            <option value="Foxtail Millet">Foxtail Millet</option>
+                            <option value="Little Millet">Little Millet</option>
+                            <option value="Kodo Millet">Kodo Millet</option>
+                            <option value="Proso Millet">Proso Millet</option>
+                            <option value="Barnyard Millet">Barnyard Millet</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="rawMaterialQuantity">Quantity Needed</label>
+                        <input type="number" id="rawMaterialQuantity" required min="1">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="rawMaterialUnit">Unit</label>
+                        <select id="rawMaterialUnit" required>
+                            <option value="kg">Kilograms (kg)</option>
+                            <option value="quintal">Quintal</option>
+                            <option value="ton">Ton</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="rawMaterialQuality">Quality Required</label>
+                        <select id="rawMaterialQuality" required>
+                            <option value="Premium">Premium</option>
+                            <option value="Good">Good</option>
+                            <option value="Organic">Organic</option>
+                            <option value="Fair">Fair</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="rawMaterialNotes">Notes</label>
+                    <textarea id="rawMaterialNotes" rows="3" placeholder="Any specific requirements..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-search"></i> Find Suppliers
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/service-dashboard.js"></script>
+</body>
+</html>

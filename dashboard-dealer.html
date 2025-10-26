@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dealer Dashboard - Shree Anna Platform</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/auth.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header">
+            <div class="dashboard-nav">
+                <div class="dashboard-title">
+                    <i class="fas fa-store"></i>
+                    Dealer Dashboard
+                </div>
+                <div class="dashboard-user">
+                    <span id="dealerName"></span>
+                    <button class="btn btn-outline" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Content -->
+        <div class="dashboard-content">
+            <!-- Stats Cards -->
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <h3 id="totalPurchases">0</h3>
+                    <p>Total Purchases</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="pendingOrders">0</h3>
+                    <p>Pending Orders</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="totalSpent">₹0</h3>
+                    <p>Total Spent</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="favoriteFarmers">0</h3>
+                    <p>Favorite Farmers</p>
+                </div>
+            </div>
+
+            <!-- Search and Filter Section -->
+            <div class="filter-section">
+                <h2><i class="fas fa-search"></i> Find Crops</h2>
+                <form id="searchForm">
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label for="searchTerm">Search</label>
+                            <input type="text" id="searchTerm" placeholder="Search crops...">
+                        </div>
+                        <div class="filter-group">
+                            <label for="milletType">Millet Type</label>
+                            <select id="milletType">
+                                <option value="">All Types</option>
+                                <option value="Finger Millet">Finger Millet (Ragi)</option>
+                                <option value="Pearl Millet">Pearl Millet (Bajra)</option>
+                                <option value="Foxtail Millet">Foxtail Millet</option>
+                                <option value="Little Millet">Little Millet</option>
+                                <option value="Kodo Millet">Kodo Millet</option>
+                                <option value="Proso Millet">Proso Millet</option>
+                                <option value="Barnyard Millet">Barnyard Millet</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="location">Location</label>
+                            <input type="text" id="location" placeholder="Enter location...">
+                        </div>
+                        <div class="filter-group">
+                            <label for="quality">Quality</label>
+                            <select id="quality">
+                                <option value="">All Qualities</option>
+                                <option value="Premium">Premium</option>
+                                <option value="Good">Good</option>
+                                <option value="Organic">Organic</option>
+                                <option value="Fair">Fair</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label for="priceMin">Min Price (₹)</label>
+                            <input type="number" id="priceMin" placeholder="Min price">
+                        </div>
+                        <div class="filter-group">
+                            <label for="priceMax">Max Price (₹)</label>
+                            <input type="number" id="priceMax" placeholder="Max price">
+                        </div>
+                        <div class="filter-group">
+                            <label for="quantityMin">Min Quantity</label>
+                            <input type="number" id="quantityMin" placeholder="Min quantity">
+                        </div>
+                        <div class="filter-group">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-search"></i> Search
+                            </button>
+                            <button type="button" class="btn btn-outline" onclick="clearFilters()">
+                                <i class="fas fa-times"></i> Clear
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Available Crops Section -->
+            <div class="dashboard-section">
+                <h2><i class="fas fa-seedling"></i> Available Crops</h2>
+                <div class="section-actions">
+                    <button class="btn btn-outline" onclick="sortCrops('price')">
+                        <i class="fas fa-sort-amount-up"></i> Sort by Price
+                    </button>
+                    <button class="btn btn-outline" onclick="sortCrops('quantity')">
+                        <i class="fas fa-sort-amount-down"></i> Sort by Quantity
+                    </button>
+                    <button class="btn btn-outline" onclick="sortCrops('date')">
+                        <i class="fas fa-calendar"></i> Sort by Date
+                    </button>
+                </div>
+                <div id="cropsList" class="products-grid">
+                    <!-- Crops will be loaded here -->
+                </div>
+            </div>
+
+            <!-- My Orders Section -->
+            <div class="dashboard-section">
+                <h2><i class="fas fa-shopping-cart"></i> My Orders</h2>
+                <div class="section-actions">
+                    <button class="btn btn-outline" onclick="filterOrders('all')">
+                        <i class="fas fa-list"></i> All Orders
+                    </button>
+                    <button class="btn btn-outline" onclick="filterOrders('pending')">
+                        <i class="fas fa-clock"></i> Pending
+                    </button>
+                    <button class="btn btn-outline" onclick="filterOrders('confirmed')">
+                        <i class="fas fa-check"></i> Confirmed
+                    </button>
+                </div>
+                <div id="ordersList">
+                    <!-- Orders will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Favorite Farmers Section -->
+            <div class="dashboard-section">
+                <h2><i class="fas fa-heart"></i> Favorite Farmers</h2>
+                <div id="favoriteFarmersList">
+                    <!-- Favorite farmers will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Details Modal -->
+    <div class="modal" id="orderModal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('orderModal')">&times;</span>
+            <h2>Place Order</h2>
+            <form id="orderForm">
+                <input type="hidden" id="orderCropId">
+                <div class="form-group">
+                    <label for="orderQuantity">Quantity to Order</label>
+                    <input type="number" id="orderQuantity" required min="1">
+                </div>
+                <div class="form-group">
+                    <label for="orderMessage">Message to Farmer (Optional)</label>
+                    <textarea id="orderMessage" rows="3" placeholder="Add a message for the farmer..."></textarea>
+                </div>
+                <div class="order-summary">
+                    <h3>Order Summary</h3>
+                    <div id="orderSummary"></div>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-shopping-cart"></i> Place Order
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/dealer-dashboard.js"></script>
+</body>
+</html>
